@@ -1,8 +1,8 @@
 import { useMemoizedFn, useUpdate } from "ahooks";
 import { ParseOptions, StringifyOptions } from "query-string";
-import { parse, stringify } from "query-string/base";
 import { SetStateAction, useMemo, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { parse, stringify } from "query-string/base";
 
 export interface Options {
   navigateMode?: "push" | "replace";
@@ -10,12 +10,12 @@ export interface Options {
   stringifyOptions?: StringifyOptions;
 }
 
-const baseParseConfig: ParseOptions = {
+const baseParseOptions: ParseOptions = {
   parseNumbers: false,
   parseBooleans: false,
 };
 
-const baseStringifyConfig: StringifyOptions = {
+const baseStringifyOptions: StringifyOptions = {
   skipNull: false,
   skipEmptyString: false,
 };
@@ -23,7 +23,7 @@ const baseStringifyConfig: StringifyOptions = {
 type UrlState = Record<string, any>;
 
 const useUrlState = <S extends UrlState = UrlState>(
-  initialState?: S | (() => S),
+  initialState: S | (() => S),
   options?: Options
 ) => {
   type State = Partial<{ [key in keyof S]: any }>;
@@ -33,9 +33,10 @@ const useUrlState = <S extends UrlState = UrlState>(
     stringifyOptions,
   } = options || {};
 
-  const mergedParseOptions = { ...baseParseConfig, ...parseOptions };
+  const mergedParseOptions = { ...baseParseOptions, ...parseOptions };
+
   const mergedStringifyOptions = {
-    ...baseStringifyConfig,
+    ...baseStringifyOptions,
     ...stringifyOptions,
   };
 
