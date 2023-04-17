@@ -3,7 +3,7 @@ import { setup } from "./index";
 
 jest.mock("@utils/history", () => jest.requireActual("react-router-dom"));
 
-describe("useUrlState", () => {
+describe("src/hooks/useUrlState/index.ts", () => {
   afterAll(() => {
     jest.restoreAllMocks();
   });
