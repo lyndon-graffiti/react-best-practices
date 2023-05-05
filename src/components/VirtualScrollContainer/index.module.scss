@@ -1,0 +1,28 @@
+.pullContainer {
+    height: 100%;
+    & > * {
+      height: 100%;
+    }
+  }
+  
+  .indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #95989d;
+    font-size: 12px;
+  }
+  
+  .empty {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    :global(.by-empty) {
+      width: 100%;
+      background-color: transparent;
+    }
+  }
+  
