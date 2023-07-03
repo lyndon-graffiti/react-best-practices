@@ -22,7 +22,6 @@ export class Storage {
       const sorted = Object.entries(this._storage).sort(
         (a, b) => this.getDataSize(b[0], b[1]) - this.getDataSize(a[0], a[1])
       );
-
       // 逐个删除大 key，直到满足 minAllocateSize
       let clearedSize = 0;
       const clearedKeys: string[] = [];
@@ -34,28 +33,14 @@ export class Storage {
           break;
         }
       }
-
       if (clearedSize >= minAllocateSize && clearedKeys.length) {
         clearedKeys.forEach((key) => {
           this._storage.removeItem(key);
         });
-
         // 上报清除的 key，便于排查是谁写的大 key
-        // AlertMonitor.sendInfo({
-        //   type: ErrorType.event,
-        //   event_name: "clear_large_data",
-        //   category: `${JSON.stringify(
-        //     clearedKeys
-        //   )} are cleared due to quota exceed`,
-        // });
       }
     } catch (e) {
       // 上报异步处理错误
-      //   AlertMonitor.sendInfo({
-      //     type: ErrorType.js_error,
-      //     error_msg: `clear large local data failed: ${(e as Error).message}`,
-      //     error_stack: (e as Error).stack,
-      //   });
     }
   }
 
@@ -75,17 +60,11 @@ export class Storage {
       wrappedData = JSON.stringify({ data });
     } catch (e) {
       // circular data
-      //   AlertMonitor.sendInfo({
-      //     type: ErrorType.js_error,
-      //     error_msg: (e as Error).message,
-      //     error_stack: (e as Error).stack,
-      //   });
       return;
     }
     if (!wrappedData) {
       return;
     }
-
     try {
       this.ensureSet(key, wrappedData);
     } catch (ex) {
@@ -93,13 +72,7 @@ export class Storage {
       // 再次尝试设置数据
       try {
         this.ensureSet(key, wrappedData);
-      } catch (e) {
-        // AlertMonitor.sendInfo({
-        //   type: ErrorType.js_error,
-        //   error_msg: `set local data failed: ${(e as Error).message}`,
-        //   error_stack: (e as Error).stack,
-        // });
-      }
+      } catch (e) {}
     }
   }
 
@@ -110,15 +83,9 @@ export class Storage {
     if (!key) {
       return null;
     }
-
     try {
       return JSON.parse(this._storage.getItem(key) || "{}").data;
     } catch (e) {
-      //   AlertMonitor.sendInfo({
-      //     type: ErrorType.js_error,
-      //     error_msg: `read local data failed: ${(e as Error).message}`,
-      //     error_stack: (e as Error).stack,
-      //   });
       return null;
     }
   }
@@ -129,15 +96,8 @@ export class Storage {
   remove(key: string) {
     try {
       this._storage.removeItem(key);
-    } catch (e) {
-      //   AlertMonitor.sendInfo({
-      //     type: ErrorType.js_error,
-      //     error_msg: `remove local data failed: ${(e as Error).message}`,
-      //     error_stack: (e as Error).stack,
-      //   });
-    }
+    } catch (e) {}
   }
 }
 
 export const syncStorage = new Storage();
-// export const asyncStorage = new CacheManager({ type: CacheType.LOCAL });
